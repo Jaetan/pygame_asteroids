@@ -1,0 +1,13 @@
+[project]
+name = "asteroids"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.13.0"
+dependencies = [
+    "pygame>=2.6.1",
+]
+
+[tool.pylint.main]
+extension-pkg-allow-list = ["pygame"]
+max-line-length = 88
