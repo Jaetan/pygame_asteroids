@@ -10,13 +10,16 @@ from circleshape import CircleShape
 from constants import PLAYER_SPEED, PLAYER_TURN_SPEED
 
 if TYPE_CHECKING:
-    from pygame.sprite import _Group    # pyright:ignore[reportPrivateUsage]
+    from pygame.sprite import _Group  # pyright:ignore[reportPrivateUsage]
+
 
 @final
 class Player(CircleShape):
     """The circle shape around the player."""
 
-    def __init__(self, position: Vector2, radius: int, velocity: Vector2, *groups: _Group) -> None:
+    def __init__(
+        self, position: Vector2, radius: int, velocity: Vector2, *groups: _Group
+    ) -> None:
         super().__init__(position, radius, velocity, *groups)
         self.rotation = 0
 
@@ -33,7 +36,9 @@ class Player(CircleShape):
     @override
     def draw(self, screen: pygame.Surface) -> None:
         """Draw the player on the screen."""
-        _ = pygame.draw.polygon(surface=screen, color="white", points=self.triangle(), width=2)
+        _ = pygame.draw.polygon(
+            surface=screen, color="white", points=self.triangle(), width=2
+        )
 
     def rotate(self, dt: float) -> None:
         """Rotate the player by the given angle."""

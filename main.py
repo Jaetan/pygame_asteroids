@@ -12,7 +12,8 @@ from constants import PLAYER_RADIUS, SCREEN_HEIGHT, SCREEN_WIDTH
 from player import Player
 
 if TYPE_CHECKING:
-    from pygame.sprite import _Group    # pyright:ignore[reportPrivateUsage]
+    from pygame.sprite import _Group  # pyright:ignore[reportPrivateUsage]
+
 
 def main() -> None:
     """Main function for the asteroids game."""
@@ -27,7 +28,13 @@ def main() -> None:
     drawables: _Group = Group()
     asteroids: _Group = Group()
 
-    player = Player(Vector2(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2), PLAYER_RADIUS, Vector2(0, 0), updatables, drawables)
+    player = Player(
+        Vector2(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2),
+        PLAYER_RADIUS,
+        Vector2(0, 0),
+        updatables,
+        drawables,
+    )
     field = AsteroidField(asteroids, updatables, drawables)
     field.add(updatables)
 

@@ -9,7 +9,7 @@ from pygame.sprite import Sprite
 from pygame.surface import Surface
 
 if TYPE_CHECKING:
-    from pygame.sprite import _Group    # pyright:ignore[reportPrivateUsage]
+    from pygame.sprite import _Group  # pyright:ignore[reportPrivateUsage]
 
 K = TypeVar("K")
 
@@ -17,7 +17,9 @@ K = TypeVar("K")
 class CircleShape(Sprite):
     """Sprite implementation in the game: a circle with specified radius and center."""
 
-    def __init__(self, position: Vector2, radius: int, velocity: Vector2, *groups: _Group) -> None:
+    def __init__(
+        self, position: Vector2, radius: int, velocity: Vector2, *groups: _Group
+    ) -> None:
         super().__init__(*groups)
         self.position: Vector2 = position
         self.radius: int = radius

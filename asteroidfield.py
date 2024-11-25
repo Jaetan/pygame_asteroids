@@ -19,7 +19,8 @@ from constants import (
 )
 
 if TYPE_CHECKING:
-    from pygame.sprite import _Group    # pyright:ignore[reportPrivateUsage]
+    from pygame.sprite import _Group  # pyright:ignore[reportPrivateUsage]
+
 
 @final
 class AsteroidField(Sprite):
@@ -51,12 +52,7 @@ class AsteroidField(Sprite):
 
     def spawn(self, position: Vector2, radius: int, velocity: Vector2):
         """Spawn an asteroid"""
-        _ = Asteroid(
-            position,
-            radius,
-            velocity,
-            *self.asteroids_groups
-        )
+        _ = Asteroid(position, radius, velocity, *self.asteroids_groups)
 
     @override
     def update[**p](self, dt: float, /, *args: p.args, **kwargs: p.kwargs):
