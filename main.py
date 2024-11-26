@@ -58,10 +58,18 @@ def main() -> None:
         updatables.update(dt)
         for drawable in drawables:
             cast(CircleShape, cast(object, drawable)).draw(screen)
+        to_kill: list[CircleShape] = []
         for asteroid in asteroids:
-            if player.collides_with(cast(CircleShape, cast(object, asteroid))):
+            asteroid_circle = cast(CircleShape, cast(object, asteroid))
+            if player.collides_with(asteroid_circle):
                 print("Game over!")
                 running = False
+            for shot in shots:
+                shot_circle = cast(CircleShape, cast(object, shot))
+                if shot_circle.collides_with(asteroid_circle):
+                    to_kill.extend([shot_circle, asteroid_circle])
+        for sprite in to_kill:
+            sprite.kill()
 
         pygame.display.flip()
         dt = clock.tick(60) / 1000
