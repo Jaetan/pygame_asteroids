@@ -1,7 +1,8 @@
 """CircleShape is used as the base shape for all sprites in the game."""
 
 from __future__ import annotations
-from typing import TypeVar, override, TYPE_CHECKING
+
+from typing import TYPE_CHECKING, override
 
 from pygame.math import Vector2
 from pygame.rect import Rect
@@ -10,8 +11,6 @@ from pygame.surface import Surface
 
 if TYPE_CHECKING:
     from pygame.sprite import _Group  # pyright:ignore[reportPrivateUsage]
-
-K = TypeVar("K")
 
 
 class CircleShape(Sprite):

@@ -1,7 +1,9 @@
 """Main module for the asteroids game."""
 
 from __future__ import annotations
+
 from typing import TYPE_CHECKING, cast
+
 import pygame
 from pygame.math import Vector2
 from pygame.sprite import Group
@@ -27,11 +29,13 @@ def main() -> None:
     updatables: _Group = Group()
     drawables: _Group = Group()
     asteroids: _Group = Group()
+    shots: _Group = Group()
 
     player = Player(
         Vector2(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2),
         PLAYER_RADIUS,
         Vector2(0, 0),
+        shots,
         updatables,
         drawables,
     )

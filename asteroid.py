@@ -1,14 +1,11 @@
 """Implementation of the asteroids."""
 
-from typing import TypeVar, final, override
+from typing import final, override
 
 import pygame
 from pygame.surface import Surface
 
 from circleshape import CircleShape
-
-K = TypeVar("K")
-
 
 @final
 class Asteroid(CircleShape):
