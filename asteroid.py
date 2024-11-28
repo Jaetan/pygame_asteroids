@@ -1,28 +1,14 @@
-"""Implementation of the asteroids."""
-
-from typing import final, override
-
 import pygame
-from pygame.surface import Surface
 
 from circleshape import CircleShape
 
-@final
+
 class Asteroid(CircleShape):
-    """Asteroid class."""
+    def __init__(self, x, y, radius):
+        super().__init__(x, y, radius)
 
-    @override
-    def update[**p](self, dt: float, /, *args: p.args, **kwargs: p.kwargs):
-        """Update the asteroid."""
+    def draw(self, screen):
+        pygame.draw.circle(screen, "white", self.position, self.radius, 2)
+
+    def update(self, dt):
         self.position += self.velocity * dt
-
-    @override
-    def draw(self, screen: Surface):
-        """Draw the asteroid."""
-        _ = pygame.draw.circle(
-            surface=screen,
-            color=(255, 255, 255),
-            center=self.position,
-            radius=self.radius,
-            width=1,
-        )

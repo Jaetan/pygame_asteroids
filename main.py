@@ -1,79 +1,62 @@
-"""Main module for the asteroids game."""
-
-from __future__ import annotations
-
-from typing import TYPE_CHECKING, cast
+import sys
 
 import pygame
-from pygame.math import Vector2
-from pygame.sprite import Group
 
+from asteroid import Asteroid
 from asteroidfield import AsteroidField
-from circleshape import CircleShape
-from constants import PLAYER_RADIUS, SCREEN_HEIGHT, SCREEN_WIDTH
+from constants import *
 from player import Player
-
-if TYPE_CHECKING:
-    from pygame.sprite import _Group  # pyright:ignore[reportPrivateUsage]
+from shot import Shot
 
 
-def main() -> None:
-    """Main function for the asteroids game."""
-
-    print("Starting asteroids!")
-    print(f"Screen width: {SCREEN_WIDTH}")
-    print(f"Screen height: {SCREEN_HEIGHT}")
-    _ = pygame.init()
+def main():
+    pygame.init()
     screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
-
-    updatables: _Group = Group()
-    drawables: _Group = Group()
-    asteroids: _Group = Group()
-    shots: _Group = Group()
-
-    player = Player(
-        Vector2(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2),
-        PLAYER_RADIUS,
-        Vector2(0, 0),
-        shots,
-        updatables,
-        drawables,
-    )
-    field = AsteroidField(asteroids, updatables, drawables)
-    field.add(updatables)
-
     clock = pygame.time.Clock()
-    dt = 0
-    running = True
 
-    while running:
+    updatable = pygame.sprite.Group()
+    drawable = pygame.sprite.Group()
+    asteroids = pygame.sprite.Group()
+    shots = pygame.sprite.Group()
+
+    Asteroid.containers = (asteroids, updatable, drawable)
+    Shot.containers = (shots, updatable, drawable)
+    AsteroidField.containers = updatable
+    asteroid_field = AsteroidField()
+
+    Player.containers = (updatable, drawable)
+
+    player = Player(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2)
+
+    dt = 0
+
+    while True:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                running = False
+                return
 
-        # Something is wrong with how sprites are grouped and drawn: we shouldn't
-        # have to cast everything to a CircleShape, and we shouldn't have to clear
-        # the screen at each step. Investigate.
-        _ = screen.fill((0, 0, 0))
-        updatables.update(dt)
-        for drawable in drawables:
-            cast(CircleShape, cast(object, drawable)).draw(screen)
-        to_kill: list[CircleShape] = []
+        for obj in updatable:
+            obj.update(dt)
+
         for asteroid in asteroids:
-            asteroid_circle = cast(CircleShape, cast(object, asteroid))
-            if player.collides_with(asteroid_circle):
+            if asteroid.collides_with(player):
                 print("Game over!")
-                running = False
+                sys.exit()
+
             for shot in shots:
-                shot_circle = cast(CircleShape, cast(object, shot))
-                if shot_circle.collides_with(asteroid_circle):
-                    to_kill.extend([shot_circle, asteroid_circle])
-        for sprite in to_kill:
-            sprite.kill()
+                if asteroid.collides_with(shot):
+                    shot.kill()
+                    asteroid.kill()
+
+        screen.fill("black")
+
+        for obj in drawable:
+            obj.draw(screen)
 
         pygame.display.flip()
+
+        # limit the framerate to 60 FPS
         dt = clock.tick(60) / 1000
-    pygame.quit()
 
 
 if __name__ == "__main__":

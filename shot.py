@@ -1,29 +1,15 @@
-"""Implementation of a shot (bullet)."""
-
-from typing import final, override
-
-from pygame import Surface
 import pygame
 
 from circleshape import CircleShape
-from constants import SHOT_RADIUS
+from constants import *
 
-@final
+
 class Shot(CircleShape):
-    """Bullets fired at asteroids."""
+    def __init__(self, x, y):
+        super().__init__(x, y, SHOT_RADIUS)
 
-    @override
-    def update[**p](self, dt: float, /, *args: p.args, **kwargs: p.kwargs):
-        """Update the asteroid."""
+    def draw(self, screen):
+        pygame.draw.circle(screen, "white", self.position, self.radius, 2)
+
+    def update(self, dt):
         self.position += self.velocity * dt
-
-    @override
-    def draw(self, screen: Surface):
-        """Draw the asteroid."""
-        _ = pygame.draw.circle(
-            surface=screen,
-            color=(255, 255, 255),
-            center=self.position,
-            radius=SHOT_RADIUS,
-            width=1,
-        )
