@@ -1,52 +1,77 @@
-import pygame
+"""The player in the game, with his startship. The starship has a circular hitbox."""
+
+from typing import cast, final, override
+
+from pygame import Surface, Vector2
+from pygame.constants import K_SPACE, K_a, K_d, K_s, K_w
+from pygame.draw import polygon
+from pygame.key import get_pressed
 
 from circleshape import CircleShape
-from constants import *
+from constants import (
+    PLAYER_RADIUS,
+    PLAYER_SHOOT_COOLDOWN,
+    PLAYER_SHOOT_SPEED,
+    PLAYER_SPEED,
+    PLAYER_TURN_SPEED,
+)
 from shot import Shot
 
 
+@final
 class Player(CircleShape):
-    def __init__(self, x, y):
+    """The player in the game."""
+
+    def __init__(self, x: float, y: float):
         super().__init__(x, y, PLAYER_RADIUS)
         self.rotation = 0
-        self.shoot_timer = 0
+        self.shoot_timer: float = 0
 
-    def draw(self, screen):
-        pygame.draw.polygon(screen, "white", self.triangle(), 2)
+    @override
+    def draw(self, screen: Surface):
+        _ = polygon(screen, "white", self.triangle(), 2)
 
-    def triangle(self):
-        forward = pygame.Vector2(0, 1).rotate(self.rotation)
-        right = pygame.Vector2(0, 1).rotate(self.rotation + 90) * self.radius / 1.5
+    def triangle(self) -> list[Vector2]:
+        """Returns the vertices of the triangle representing the player's spaceship."""
+        forward = Vector2(0, 1).rotate(self.rotation)
+        right = Vector2(0, 1).rotate(self.rotation + 90) * self.radius / 1.5
         a = self.position + forward * self.radius
         b = self.position - forward * self.radius - right
         c = self.position - forward * self.radius + right
         return [a, b, c]
 
-    def update(self, dt):
+    @override
+    def update[**p](self, *args: p.args, **kwargs: p.kwargs):
+        dt = cast(int, args[0])
         self.shoot_timer -= dt
-        keys = pygame.key.get_pressed()
+        keys = get_pressed()
 
-        if keys[pygame.K_w]:
+        if keys[K_w]:
             self.move(dt)
-        if keys[pygame.K_s]:
+        if keys[K_s]:
             self.move(-dt)
-        if keys[pygame.K_a]:
+        if keys[K_a]:
             self.rotate(-dt)
-        if keys[pygame.K_d]:
+        if keys[K_d]:
             self.rotate(dt)
-        if keys[pygame.K_SPACE]:
+        if keys[K_SPACE]:
             self.shoot()
 
     def shoot(self):
+        """Shoot a bullet."""
         if self.shoot_timer > 0:
             return
         self.shoot_timer = PLAYER_SHOOT_COOLDOWN
         shot = Shot(self.position.x, self.position.y)
-        shot.velocity = pygame.Vector2(0, 1).rotate(self.rotation) * PLAYER_SHOOT_SPEED
+        shot.velocity = Vector2(0, 1).rotate(self.rotation) * PLAYER_SHOOT_SPEED
 
-    def rotate(self, dt):
+    def rotate(self, dt: int):
+        """Rotate the player's spaceship clockwise, given the specified time span
+        and internal angular velocity of the ship."""
         self.rotation += PLAYER_TURN_SPEED * dt
 
-    def move(self, dt):
-        forward = pygame.Vector2(0, 1).rotate(self.rotation)
+    def move(self, dt: int):
+        """Move the spaceship forward, given the specified time span and the internal
+        spaceship speed."""
+        forward = Vector2(0, 1).rotate(self.rotation)
         self.position += forward * PLAYER_SPEED * dt

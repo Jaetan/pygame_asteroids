@@ -1,3 +1,5 @@
+"""Constants used in the game for screen, asteroid, player, and shots."""
+
 SCREEN_WIDTH = 1280
 SCREEN_HEIGHT = 720
 

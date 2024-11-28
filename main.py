@@ -1,31 +1,41 @@
+"""Ateroids game."""
+
+from __future__ import annotations
+
 import sys
+from typing import TYPE_CHECKING
 
 import pygame
+from pygame.base import init
+from pygame.sprite import Group
 
 from asteroid import Asteroid
 from asteroidfield import AsteroidField
-from constants import *
+from constants import SCREEN_HEIGHT, SCREEN_WIDTH
 from player import Player
 from shot import Shot
 
+if TYPE_CHECKING:
+    from pygame.sprite import _Group  # pyright:ignore[reportPrivateUsage]
+
 
 def main():
-    pygame.init()
+    """Run the game."""
+    _ = init()
     screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
     clock = pygame.time.Clock()
 
-    updatable = pygame.sprite.Group()
-    drawable = pygame.sprite.Group()
-    asteroids = pygame.sprite.Group()
-    shots = pygame.sprite.Group()
+    updatable: _Group = Group()
+    drawable: _Group = Group()
+    asteroids: _Group = Group()
+    shots: _Group = pygame.sprite.Group()
 
     Asteroid.containers = (asteroids, updatable, drawable)
     Shot.containers = (shots, updatable, drawable)
-    AsteroidField.containers = updatable
-    asteroid_field = AsteroidField()
+    AsteroidField.containers = (updatable,)
+    _ = AsteroidField()
 
     Player.containers = (updatable, drawable)
-
     player = Player(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2)
 
     dt = 0
@@ -48,7 +58,7 @@ def main():
                     shot.kill()
                     asteroid.split()
 
-        screen.fill("black")
+        _ = screen.fill("black")
 
         for obj in drawable:
             obj.draw(screen)

@@ -1,22 +1,31 @@
-import random
+"""Implementation of the asteroid sprite."""
 
-import pygame
+import random
+from typing import cast, final, override
+
+from pygame.draw import circle
+from pygame.surface import Surface
 
 from circleshape import CircleShape
-from constants import *
+from constants import ASTEROID_MIN_RADIUS
 
 
+@final
 class Asteroid(CircleShape):
-    def __init__(self, x, y, radius):
-        super().__init__(x, y, radius)
+    """The asteroid sprite."""
 
-    def draw(self, screen):
-        pygame.draw.circle(screen, "white", self.position, self.radius, 2)
+    @override
+    def draw(self, screen: Surface):
+        _ = circle(screen, "white", self.position, self.radius, 2)
 
-    def update(self, dt):
+    # dt is the first item in *args
+    @override
+    def update[**p](self, *args: p.args, **kwargs: p.kwargs):
+        dt = cast(int, args[0])
         self.position += self.velocity * dt
 
     def split(self):
+        """Split an asteroid in two if big enough. Otherwise, kill it."""
         self.kill()
 
         if self.radius <= ASTEROID_MIN_RADIUS:
@@ -28,7 +37,7 @@ class Asteroid(CircleShape):
         a = self.velocity.rotate(random_angle)
         b = self.velocity.rotate(-random_angle)
 
-        new_radius = self.radius - ASTEROID_MIN_RADIUS
+        new_radius: int = self.radius - ASTEROID_MIN_RADIUS
         asteroid = Asteroid(self.position.x, self.position.y, new_radius)
         asteroid.velocity = a * 1.2
         asteroid = Asteroid(self.position.x, self.position.y, new_radius)

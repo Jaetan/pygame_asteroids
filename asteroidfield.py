@@ -1,44 +1,65 @@
-import random
+"""The field of asteroids, spawning asteroids at the border of the screen."""
 
-import pygame
+from __future__ import annotations
+
+import random
+from typing import TYPE_CHECKING, Callable, cast, final, override
+
+from pygame import Vector2
+from pygame.sprite import Group, Sprite
 
 from asteroid import Asteroid
-from constants import *
+from constants import (
+    ASTEROID_KINDS,
+    ASTEROID_MAX_RADIUS,
+    ASTEROID_MIN_RADIUS,
+    ASTEROID_SPAWN_RATE,
+    SCREEN_HEIGHT,
+    SCREEN_WIDTH,
+)
+
+if TYPE_CHECKING:
+    from pygame.sprite import _Group  # pyright:ignore[reportPrivateUsage]
 
 
-class AsteroidField(pygame.sprite.Sprite):
-    edges = [
-        [
-            pygame.Vector2(1, 0),
-            lambda y: pygame.Vector2(-ASTEROID_MAX_RADIUS, y * SCREEN_HEIGHT),
-        ],
-        [
-            pygame.Vector2(-1, 0),
-            lambda y: pygame.Vector2(
-                SCREEN_WIDTH + ASTEROID_MAX_RADIUS, y * SCREEN_HEIGHT
-            ),
-        ],
-        [
-            pygame.Vector2(0, 1),
-            lambda x: pygame.Vector2(x * SCREEN_WIDTH, -ASTEROID_MAX_RADIUS),
-        ],
-        [
-            pygame.Vector2(0, -1),
-            lambda x: pygame.Vector2(
-                x * SCREEN_WIDTH, SCREEN_HEIGHT + ASTEROID_MAX_RADIUS
-            ),
-        ],
+@final
+class AsteroidField(Sprite):
+    """Asteroid's field, controlling the spawning of asteroids."""
+
+    edges: list[tuple[Vector2, Callable[[float], Vector2]]] = [
+        (
+            Vector2(1, 0),
+            lambda y: Vector2(-ASTEROID_MAX_RADIUS, y * SCREEN_HEIGHT),
+        ),
+        (
+            Vector2(-1, 0),
+            lambda y: Vector2(SCREEN_WIDTH + ASTEROID_MAX_RADIUS, y * SCREEN_HEIGHT),
+        ),
+        (
+            Vector2(0, 1),
+            lambda x: Vector2(x * SCREEN_WIDTH, -ASTEROID_MAX_RADIUS),
+        ),
+        (
+            Vector2(0, -1),
+            lambda x: Vector2(x * SCREEN_WIDTH, SCREEN_HEIGHT + ASTEROID_MAX_RADIUS),
+        ),
     ]
 
     def __init__(self):
-        pygame.sprite.Sprite.__init__(self, self.containers)
+        if hasattr(self, "containers"):
+            super().__init__(self.containers)
+        else:
+            super().__init__()
         self.spawn_timer = 0.0
 
-    def spawn(self, radius, position, velocity):
+    def spawn(self, radius: int, position: Vector2, velocity: Vector2):
+        """Spawn a new asteroid in the field."""
         asteroid = Asteroid(position.x, position.y, radius)
         asteroid.velocity = velocity
 
-    def update(self, dt):
+    @override
+    def update[**p](self, *args: p.args, **kwargs: p.kwargs):
+        dt = cast(int, args[0])
         self.spawn_timer += dt
         if self.spawn_timer > ASTEROID_SPAWN_RATE:
             self.spawn_timer = 0
