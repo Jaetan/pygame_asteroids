@@ -1,6 +1,8 @@
 """The player in the game, with his startship. The starship has a circular hitbox."""
 
-from typing import cast, final, override
+from __future__ import annotations
+
+from typing import TYPE_CHECKING, cast, final, override
 
 from pygame import Surface, Vector2
 from pygame.constants import K_SPACE, K_a, K_d, K_s, K_w
@@ -17,13 +19,17 @@ from constants import (
 )
 from shot import Shot
 
+if TYPE_CHECKING:
+    from pygame.sprite import _Group  # pyright:ignore[reportPrivateUsage]
+
 
 @final
 class Player(CircleShape):
     """The player in the game."""
 
-    def __init__(self, x: float, y: float):
-        super().__init__(x, y, PLAYER_RADIUS)
+    def __init__(self, x: float, y: float, *groups: _Group):
+        self.shots_group, *self.player_groups = groups
+        super().__init__(x, y, PLAYER_RADIUS, *self.player_groups)
         self.rotation = 0
         self.shoot_timer: float = 0
 
@@ -62,7 +68,9 @@ class Player(CircleShape):
         if self.shoot_timer > 0:
             return
         self.shoot_timer = PLAYER_SHOOT_COOLDOWN
-        shot = Shot(self.position.x, self.position.y)
+        shot = Shot(
+            self.position.x, self.position.y, self.shots_group, *self.player_groups
+        )
         shot.velocity = Vector2(0, 1).rotate(self.rotation) * PLAYER_SHOOT_SPEED
 
     def rotate(self, dt: int):

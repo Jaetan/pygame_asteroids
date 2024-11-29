@@ -45,16 +45,16 @@ class AsteroidField(Sprite):
         ),
     ]
 
-    def __init__(self):
-        if hasattr(self, "containers"):
-            super().__init__(self.containers)
-        else:
-            super().__init__()
+    def __init__(self, *groups: _Group):
+        self.updatable, *self.asteroids_groups = groups
+        super().__init__(self.updatable)
         self.spawn_timer = 0.0
 
     def spawn(self, radius: int, position: Vector2, velocity: Vector2):
         """Spawn a new asteroid in the field."""
-        asteroid = Asteroid(position.x, position.y, radius)
+        asteroid = Asteroid(
+            position.x, position.y, radius, self.updatable, self.asteroids_groups
+        )
         asteroid.velocity = velocity
 
     @override

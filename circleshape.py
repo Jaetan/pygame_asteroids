@@ -6,7 +6,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, override
 
 from pygame.math import Vector2
-from pygame.sprite import Group, Sprite
+from pygame.sprite import Sprite
 from pygame.surface import Surface
 
 if TYPE_CHECKING:
@@ -16,11 +16,8 @@ if TYPE_CHECKING:
 class CircleShape(Sprite):
     """Base class for all sprites in the game."""
 
-    def __init__(self, x: float, y: float, radius: int):
-        if hasattr(self, "containers"):
-            super().__init__(self.containers)
-        else:
-            super().__init__()
+    def __init__(self, x: float, y: float, radius: int, *groups: _Group):
+        super().__init__(*groups)
         self.position: Vector2 = Vector2(x, y)
         self.velocity: Vector2 = Vector2(0, 0)
         self.radius: int = radius
