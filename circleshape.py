@@ -16,10 +16,12 @@ if TYPE_CHECKING:
 class CircleShape(Sprite):
     """Base class for all sprites in the game."""
 
-    def __init__(self, x: float, y: float, radius: int, *groups: _Group):
+    def __init__(
+        self, x: float, y: float, radius: int, velocity: Vector2, *groups: _Group
+    ):
         super().__init__(*groups)
         self.position: Vector2 = Vector2(x, y)
-        self.velocity: Vector2 = Vector2(0, 0)
+        self.velocity: Vector2 = velocity
         self.radius: int = radius
 
     def draw(self, _screen: Surface):

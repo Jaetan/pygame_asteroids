@@ -52,10 +52,14 @@ class AsteroidField(Sprite):
 
     def spawn(self, radius: int, position: Vector2, velocity: Vector2):
         """Spawn a new asteroid in the field."""
-        asteroid = Asteroid(
-            position.x, position.y, radius, self.updatable, self.asteroids_groups
+        _ = Asteroid(
+            position.x,
+            position.y,
+            radius,
+            velocity,
+            self.updatable,
+            self.asteroids_groups,
         )
-        asteroid.velocity = velocity
 
     @override
     def update[**p](self, *args: p.args, **kwargs: p.kwargs):

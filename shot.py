@@ -6,6 +6,7 @@ from typing import TYPE_CHECKING, cast, final, override
 
 from pygame import Surface
 from pygame.draw import circle
+from pygame.math import Vector2
 
 from circleshape import CircleShape
 from constants import SHOT_RADIUS
@@ -18,8 +19,8 @@ if TYPE_CHECKING:
 class Shot(CircleShape):
     """A shot fired by the player."""
 
-    def __init__(self, x: float, y: float, *groups: _Group):
-        super().__init__(x, y, SHOT_RADIUS, *groups)
+    def __init__(self, x: float, y: float, velocity: Vector2, *groups: _Group):
+        super().__init__(x, y, SHOT_RADIUS, velocity, *groups)
 
     @override
     def draw(self, screen: Surface):

@@ -27,9 +27,9 @@ if TYPE_CHECKING:
 class Player(CircleShape):
     """The player in the game."""
 
-    def __init__(self, x: float, y: float, *groups: _Group):
+    def __init__(self, x: float, y: float, velocity: Vector2, *groups: _Group):
         self.shots_group, *self.player_groups = groups
-        super().__init__(x, y, PLAYER_RADIUS, *self.player_groups)
+        super().__init__(x, y, PLAYER_RADIUS, velocity, *self.player_groups)
         self.rotation = 0
         self.shoot_timer: float = 0
 
@@ -68,10 +68,14 @@ class Player(CircleShape):
         if self.shoot_timer > 0:
             return
         self.shoot_timer = PLAYER_SHOOT_COOLDOWN
-        shot = Shot(
-            self.position.x, self.position.y, self.shots_group, *self.player_groups
+        velocity = Vector2(0, 1).rotate(self.rotation) * PLAYER_SHOOT_SPEED
+        _ = Shot(
+            self.position.x,
+            self.position.y,
+            velocity,
+            self.shots_group,
+            *self.player_groups,
         )
-        shot.velocity = Vector2(0, 1).rotate(self.rotation) * PLAYER_SHOOT_SPEED
 
     def rotate(self, dt: int):
         """Rotate the player's spaceship clockwise, given the specified time span

@@ -6,6 +6,7 @@ import random
 from typing import TYPE_CHECKING, cast, final, override
 
 from pygame.draw import circle
+from pygame.math import Vector2
 from pygame.surface import Surface
 
 from circleshape import CircleShape
@@ -19,8 +20,10 @@ if TYPE_CHECKING:
 class Asteroid(CircleShape):
     """The asteroid sprite."""
 
-    def __init__(self, x: float, y: float, radius: int, *groups: _Group):
-        super().__init__(x, y, radius, *groups)
+    def __init__(
+        self, x: float, y: float, radius: int, velocity: Vector2, *groups: _Group
+    ):
+        super().__init__(x, y, radius, velocity, *groups)
         self.asteroid_groups = groups
 
     @override
@@ -46,11 +49,9 @@ class Asteroid(CircleShape):
         b = self.velocity.rotate(-random_angle)
 
         new_radius: int = self.radius - ASTEROID_MIN_RADIUS
-        asteroid = Asteroid(
-            self.position.x, self.position.y, new_radius, *self.asteroid_groups
+        _ = Asteroid(
+            self.position.x, self.position.y, new_radius, a * 1.2, *self.asteroid_groups
         )
-        asteroid.velocity = a * 1.2
-        asteroid = Asteroid(
-            self.position.x, self.position.y, new_radius, *self.asteroid_groups
+        _ = Asteroid(
+            self.position.x, self.position.y, new_radius, b * 1.2, *self.asteroid_groups
         )
-        asteroid.velocity = b * 1.2

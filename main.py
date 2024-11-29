@@ -8,6 +8,7 @@ from typing import TYPE_CHECKING
 import pygame
 from pygame.base import init
 from pygame.display import set_mode
+from pygame.math import Vector2
 from pygame.sprite import Group
 from pygame.time import Clock
 
@@ -31,7 +32,9 @@ def main():
     shots: _Group = pygame.sprite.Group()
 
     _ = AsteroidField(updatable, asteroids, drawable)
-    player = Player(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2, shots, updatable, drawable)
+    player = Player(
+        SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2, Vector2(0, 0), shots, updatable, drawable
+    )
     dt = 0
 
     while True:
